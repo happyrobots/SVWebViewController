@@ -17,6 +17,8 @@
 @property (nonatomic, strong, readonly) UIBarButtonItem *actionBarButtonItem;
 @property (nonatomic, strong, readonly) UIActionSheet *pageActionSheet;
 
+@property (nonatomic, strong) UIToolbar *actionsToolbar;
+
 @property (nonatomic, strong) UIWebView *mainWebView;
 @property (nonatomic, strong) NSURL *URL;
 
@@ -150,7 +152,9 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+    self.actionsToolbar = [[UIToolbar alloc] initWithFrame:(CGRect){0, 0, self.view.frame.size.width, 48}];
     [self updateToolbarItems];
+    [self.view addSubview:self.actionsToolbar];
 }
 
 - (void)viewDidUnload {
@@ -170,15 +174,9 @@
 	[super viewWillAppear:animated];
 	
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        [self.navigationController setToolbarHidden:NO animated:animated];
-    }
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        [self.navigationController setToolbarHidden:YES animated:animated];
+        CGRect f = self.actionsToolbar.frame;
+        f.origin.y = self.view.frame.size.height - self.actionsToolbar.frame.size.height;
+        self.actionsToolbar.frame = f;
     }
 }
 
@@ -280,7 +278,7 @@
         
 				self.navigationController.toolbar.barStyle = self.navigationController.navigationBar.barStyle;
 				self.navigationController.toolbar.tintColor = self.navigationController.navigationBar.tintColor;
-        self.toolbarItems = items;
+        self.actionsToolbar.items = items;
     }
 }
 
@@ -332,7 +330,7 @@
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
         [self.pageActionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
     else
-        [self.pageActionSheet showFromToolbar:self.navigationController.toolbar];
+        [self.pageActionSheet showFromToolbar:self.actionsToolbar];
     
 }
 
